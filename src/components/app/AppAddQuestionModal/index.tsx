@@ -1,9 +1,24 @@
 import React from 'react';
 import {Alert, Modal, StyleSheet, View} from 'react-native';
 import {useActiveTheme} from 'hooks/useActiveTheme.ts';
-import {Button, IconButton, Text, TextInput} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  IconButton,
+  Text,
+  TextInput,
+} from 'react-native-paper';
+import {IPostedConversation, postConversation} from 'api/forum.ts';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 
-export const AppSosModal = ({
+const updateCache = (
+  oldData: IPostedConversation[],
+  data: {data: IPostedConversation},
+) => {
+  return {...oldData, newAdded: true, results: [{...data.data}]};
+};
+
+export const AppAddQuestionModal = ({
   modalState,
   changeModalState,
 }: {
@@ -11,9 +26,23 @@ export const AppSosModal = ({
   changeModalState: (modalState: boolean) => void;
 }) => {
   const activeTheme = useActiveTheme();
-  const [editState, setEditState] = React.useState<boolean>(false);
-  const [contactName, setContactName] = React.useState<string>('Me');
-  const [phoneNumber, setPhoneNumber] = React.useState<string>('903481121');
+  const [question, setQuestion] = React.useState<string>('');
+  const queryClient = useQueryClient();
+
+  const addQuestionMutation = useMutation({
+    mutationFn: () => {
+      return postConversation(question);
+    },
+    onSuccess: data => {
+      setQuestion('');
+      queryClient.setQueryData(['questions'], oldData =>
+        updateCache(oldData as IPostedConversation[], data),
+      );
+      queryClient.setQueryData(['myQuestions'], oldData =>
+        updateCache(oldData as IPostedConversation[], data),
+      );
+    },
+  });
 
   return (
     <View
@@ -59,62 +88,40 @@ export const AppSosModal = ({
               styles.modalView,
               {backgroundColor: activeTheme.backgroundSecondary},
             ]}>
-            <Text style={styles.modalText}>
-              {editState ? 'Edit' : 'Saved'} contact
+            <Text
+              style={{
+                color: activeTheme.textPrimary,
+                fontSize: 20,
+                marginBottom: 10,
+              }}>
+              Add Question
             </Text>
-            {editState ? (
-              <>
-                <View style={{gap: 10, width: '100%'}}>
-                  <TextInput
-                    value={contactName}
-                    onChangeText={setContactName}
-                    style={{width: '100%'}}
-                    label={'Contact name'}
-                  />
-                  <TextInput
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
-                    style={{width: '100%'}}
-                    keyboardType={'numeric'}
-                    label={'Phone number'}
-                  />
-                </View>
-                <IconButton
-                  icon={'content-save'}
-                  mode={'contained'}
-                  size={40}
-                  onPress={() => setEditState(false)}
+            <TextInput
+              numberOfLines={3}
+              multiline={true}
+              label={'Question'}
+              value={question}
+              mode={'outlined'}
+              onChangeText={setQuestion}
+              style={{width: '100%', marginBottom: 20}}
+            />
+            <Button
+              mode={'contained'}
+              onPress={() => {
+                addQuestionMutation.mutate();
+                changeModalState(false);
+              }}
+              disabled={addQuestionMutation.isPending || !question}>
+              {addQuestionMutation.isPending ? (
+                <ActivityIndicator
+                  size={'large'}
+                  style={{marginTop: 20}}
+                  color={activeTheme.textSecondary}
                 />
-                <Text>Save contact</Text>
-              </>
-            ) : (
-              <>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 10,
-                  }}>
-                  <Text style={{fontWeight: 'bold'}} variant={'headlineSmall'}>
-                    {contactName} - {phoneNumber}
-                  </Text>
-                  <IconButton
-                    icon={'account-edit'}
-                    size={20}
-                    mode={'contained'}
-                    onPress={() => setEditState(true)}
-                  />
-                </View>
-                <Button
-                  icon={'phone'}
-                  buttonColor={'green'}
-                  onPress={() => {}}
-                  style={{width: '100%', borderRadius: 5, marginTop: 10}}>
-                  <Text>Call</Text>
-                </Button>
-              </>
-            )}
+              ) : (
+                'Add'
+              )}
+            </Button>
           </View>
         </View>
       </Modal>

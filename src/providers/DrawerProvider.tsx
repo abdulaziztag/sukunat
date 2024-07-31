@@ -1,19 +1,23 @@
-import React, { createContext, useState, useContext } from 'react';
+import {createContext, useState, useContext, ReactNode} from 'react';
 
-const DrawerContext = createContext();
+interface DrawerContextType {
+  drawerState: boolean;
+  setDrawerState: (newData: boolean) => void;
+}
+
+const DrawerContext = createContext<DrawerContextType>({
+  drawerState: false,
+  setDrawerState: () => {},
+});
 
 export const useDrawer = () => useContext(DrawerContext);
 
-export const DataProvider = ({ children }) => {
-  const [data, setData] = useState('');
-
-  const updateData = (newData) => {
-    setData(newData);
-  };
+export const DrawerProvider = ({children}: {children: ReactNode}) => {
+  const [drawerState, setDrawerState] = useState(false);
 
   return (
-    <DataContext.Provider value={{ data, updateData }}>
-  {children}
-  </DataContext.Provider>
-);
+    <DrawerContext.Provider value={{drawerState, setDrawerState}}>
+      {children}
+    </DrawerContext.Provider>
+  );
 };
