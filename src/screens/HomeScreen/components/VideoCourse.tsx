@@ -31,9 +31,12 @@ export const VideoCourses = () => {
             android_ripple={{foreground: true, color: ''}}
             key={item.id}
             style={{
-              paddingHorizontal: 10,
-              paddingTop: 10,
-              borderBottomWidth: 1,
+              marginHorizontal: 10,
+              borderRadius: 10,
+              marginVertical: 5,
+              borderWidth: 1,
+              gap: 10,
+              flexDirection: 'row',
               borderBottomColor: activeTheme.textSecondary,
             }}
             onPress={() => {
@@ -47,7 +50,8 @@ export const VideoCourses = () => {
               }}
               resizeMode={'cover'}
               style={{
-                height: 220,
+                height: 100,
+                width: 100,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 10,
@@ -55,40 +59,50 @@ export const VideoCourses = () => {
             />
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 10,
+                flex: 1,
+                justifyContent: 'center',
+                paddingRight: 10,
               }}>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Icon
-                  name={'play-circle'}
-                  size={20}
-                  color={activeTheme.textSecondary}
-                />
-                <Text style={{color: activeTheme.textSecondary}}>
-                  {item.video_count} video(s)
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Icon
-                  name={'access-time'}
-                  size={20}
-                  color={activeTheme.textSecondary}
-                />
-                <Text style={{color: activeTheme.textSecondary}}>
-                  {item.total_duration.split(':').join(' : ')}
-                </Text>
-              </View>
+              <Text variant={'titleMedium'}>{item.title}</Text>
+              <Text
+                variant={'bodyMedium'}
+                numberOfLines={1}
+                style={{
+                  color: activeTheme.textPrimary,
+                  width: '90%',
+                }}>
+                {item.description}
+              </Text>
+              {
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                  }}>
+                  <View style={{flexDirection: 'row', gap: 5}}>
+                    <Icon
+                      name={'play-circle'}
+                      size={20}
+                      color={activeTheme.textSecondary}
+                    />
+                    <Text style={{color: activeTheme.textSecondary}}>
+                      {item.video_count} video(s)
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', gap: 5}}>
+                    <Icon
+                      name={'access-time'}
+                      size={20}
+                      color={activeTheme.textSecondary}
+                    />
+                    <Text style={{color: activeTheme.textSecondary}}>
+                      {item.total_duration.split(':').join(' : ')}
+                    </Text>
+                  </View>
+                </View>
+              }
             </View>
-            <Text variant={'titleMedium'} style={{marginVertical: 10}}>
-              {item.title}
-            </Text>
-            <Text
-              variant={'bodyMedium'}
-              numberOfLines={2}
-              style={{color: activeTheme.textPrimary, marginBottom: 10}}>
-              {item.description}
-            </Text>
           </Pressable>
         ))}
         {Math.round(data?.data.count / VIDEO_COURSES_PER_PAGE) > 1 && (

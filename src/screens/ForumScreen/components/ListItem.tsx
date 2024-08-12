@@ -49,6 +49,7 @@ export const ListItem = ({
               firstName={item?.user?.first_name}
               lastName={item?.user?.last_name}
               avatarSrc={item?.user?.profile_photo}
+              bgColor={item?.user?.color}
             />
             <Text>
               {item?.user?.first_name} {item?.user?.last_name}

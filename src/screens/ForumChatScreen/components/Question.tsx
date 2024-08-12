@@ -1,12 +1,13 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useActiveTheme} from 'hooks/useActiveTheme.ts';
 import {IConversation} from 'api/forum.ts';
 import {AppAvatar} from 'components/app/AppAvatar';
 import {transformDate} from 'utils/datePipe.ts';
+import {memo} from 'react';
 
-export const Question = ({question}: {question?: IConversation}) => {
+const QuestionBlock = ({question}: {question?: IConversation}) => {
   const activeTheme = useActiveTheme();
 
   return (
@@ -20,6 +21,7 @@ export const Question = ({question}: {question?: IConversation}) => {
           firstName={question?.user.first_name || ''}
           lastName={question?.user.last_name}
           avatarSrc={question?.user.profile_photo}
+          bgColor={question?.user.color}
         />
         <Text variant={'titleMedium'}>
           {question?.user.first_name} {question?.user.last_name}
@@ -47,6 +49,9 @@ export const Question = ({question}: {question?: IConversation}) => {
     </View>
   );
 };
+
+export const Question = memo(QuestionBlock);
+
 const styles = StyleSheet.create({
   questionContainer: {
     padding: 10,

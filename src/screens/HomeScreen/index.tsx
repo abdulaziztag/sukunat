@@ -16,6 +16,7 @@ import {useQuery} from '@tanstack/react-query';
 import {VideoCourses} from 'screens/HomeScreen/components/VideoCourse.tsx';
 import {getArticlesCategories} from 'api/articles.ts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {TopContent} from 'screens/HomeScreen/components/TopContent.tsx';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -33,13 +34,23 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
         }
-        style={{
-          paddingTop: 10,
-        }}
         contentContainerStyle={{
           paddingBottom: 40,
         }}>
-        <View style={styles.featuresGrid}>
+        <TopContent />
+        <Text
+          variant={'titleMedium'}
+          style={{
+            marginHorizontal: 10,
+            marginTop: 30,
+            color: activeTheme.textPrimary,
+          }}>
+          Articles
+        </Text>
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.featuresGrid}
+          showsHorizontalScrollIndicator={false}>
           {isPending ? (
             <ActivityIndicator
               size={'large'}
@@ -47,33 +58,35 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
             />
           ) : (
             data?.data.map(e => (
-              <Card
-                style={[
-                  styles.featureContainer,
-                  {backgroundColor: activeTheme.backgroundPrimary},
-                ]}
-                key={e.id}
-                onPress={() =>
-                  navigation.navigate('ArticlesList', {categoryId: +e.id})
-                }>
-                <Icon
-                  name={e.icon_id}
-                  size={30}
-                  color={activeTheme.textPrimary}
-                  style={{alignSelf: 'center', paddingBottom: 10}}
-                />
+              <View style={{width: 120}}>
+                <Card
+                  style={[
+                    styles.featureContainer,
+                    {backgroundColor: activeTheme.backgroundPrimary},
+                  ]}
+                  key={e.id}
+                  onPress={() =>
+                    navigation.navigate('ArticlesList', {categoryId: +e.id})
+                  }>
+                  <Icon
+                    name={e.icon_id}
+                    size={70}
+                    color={activeTheme.textPrimary}
+                    style={{alignSelf: 'center', paddingBottom: 10}}
+                  />
+                </Card>
                 <Text
+                  variant={'labelSmall'}
                   style={{
                     textAlign: 'center',
-                    alignItems: 'flex-end',
                     color: activeTheme.textPrimary,
                   }}>
                   {e.name}
                 </Text>
-              </Card>
+              </View>
             ))
           )}
-        </View>
+        </ScrollView>
         <Text
           style={{marginTop: 10, marginHorizontal: 10}}
           variant={'titleLarge'}>
@@ -102,17 +115,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     gap: 10,
     marginTop: 10,
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
   },
   youtubePlayer: {
     alignSelf: 'stretch',
     height: 200,
   },
   featureContainer: {
-    flex: 1,
     aspectRatio: 1,
-    height: 1,
-    flexBasis: '48%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

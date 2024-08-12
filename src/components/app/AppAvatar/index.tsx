@@ -1,24 +1,33 @@
 import {Image, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
 export const AppAvatar = ({
   firstName,
   lastName,
   avatarSrc,
   bgColor,
+  size = 45,
+  font = 'bodyLarge',
 }: {
   firstName: string;
   lastName?: string;
   avatarSrc?: string;
   bgColor?: string;
+  size?: number;
+  font?: VariantProp<never>;
 }) => {
   return (
-    <View style={[styles.avatar, {backgroundColor: bgColor || '#FFAB91'}]}>
+    <View
+      style={[
+        styles.avatar,
+        {backgroundColor: bgColor || '#FFAB91', height: size, width: size},
+      ]}>
       {avatarSrc ? (
         <Image style={styles.avatar} source={{uri: avatarSrc}} />
       ) : (
         <Text
-          variant={'bodyLarge'}
+          variant={font}
           style={{color: 'white', fontWeight: 'bold', letterSpacing: -1.5}}>
           {firstName[0].toUpperCase()} {lastName && lastName[0].toUpperCase()}
         </Text>
@@ -29,8 +38,6 @@ export const AppAvatar = ({
 
 const styles = StyleSheet.create({
   avatar: {
-    height: 45,
-    width: 45,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 100,

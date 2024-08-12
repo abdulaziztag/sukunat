@@ -26,7 +26,7 @@ export const colors = {
     info: '#17A2B8',
     accentColor: '#8A2BE2',
     answerBlock: '#2b5378',
-    questionListItem: '#2b5378',
+    questionListItem: '#121212',
     answerBlockForumChat: '#444444',
   },
 };
